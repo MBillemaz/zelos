@@ -18,7 +18,24 @@ var UserSchema = new Schema({
     groups: [{type: mongoose.Schema.ObjectID, ref: 'Group'}]
 });
 
+var User = mongoose.Model('User', UserSchema);
 
+var AddressTypeSchema = new Schema({
+    label: String
+});
+
+var AddressType = mongoose.Model('AddressType', AddressType);
+
+var AddressSchema = new Schema({
+    number: Number,
+    street: String,
+    zip_code: String,
+    city: String,
+    country: String,
+    email: String,
+    phone: String,
+    type: [{type: mongoose.SchemaType.ObjectID, ref: 'AddressType'}]
+})
 
 
 
