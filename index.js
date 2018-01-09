@@ -1,5 +1,5 @@
-import { Schema } from 'mongoose';
 var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 mongoose.connect('mongodb://localhost/projet');
 
 var GroupSchema = new Schema({
@@ -7,7 +7,7 @@ var GroupSchema = new Schema({
     description: String
 })
 
-var Group = mongoose.Model('Group', GroupSchema);
+var Group = mongoose.model('Group', GroupSchema);
 
 var UserSchema = new Schema({
     name: {type: String, required: true},
@@ -15,25 +15,25 @@ var UserSchema = new Schema({
     birth_date: {type: Date, required: true},
     login: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    groups: [{type: mongoose.Schema.ObjectID, ref: 'Group'}],
-    addresses: [{type: mongoose.Schema.ObjectID, ref: 'Address'}],
+    groups: [{type: mongoose.Schema.ObjectId, ref: 'Group'}],
+    addresses: [{type: mongoose.Schema.ObjectId, ref: 'Address'}],
     status: {
-        type: [{
+        type: {
             type: String,
             enum: ['prospect', 'customer']
-        }],
+        },
         default: ['prospect']
     },
-    createAt: {type: Date, default: Date.now()}
+    createAt: {type: Date, default: Date.now}
 });
 
-var User = mongoose.Model('User', UserSchema);
+var User = mongoose.model('User', UserSchema);
 
 var AddressTypeSchema = new Schema({
     label: String
 });
 
-var AddressType = mongoose.Model('AddressType', AddressTypeSchema);
+var AddressType = mongoose.model('AddressType', AddressTypeSchema);
 
 var AddressSchema = new Schema({
     number: Number,
@@ -43,10 +43,10 @@ var AddressSchema = new Schema({
     country: String,
     email: String,
     phone: String,
-    type: [{type: mongoose.SchemaType.ObjectID, ref: 'AddressType'}]
+    type: [{type: mongoose.Schema.ObjectId, ref: 'AddressType'}]
 })
 
-var Address = mongoose.Model('Address', AddressSchema);
+var Address = mongoose.model('Address', AddressSchema);
 
 var newAddressType = new AddressType({
     label: 'livraison'
