@@ -17,8 +17,6 @@ fs.readdirSync(models)
   .forEach(file => require(join(models, file)));
 
 
-
-
 app.get('/', function(req, res, err) {
 
 });
