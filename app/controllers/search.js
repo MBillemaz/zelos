@@ -7,8 +7,7 @@ module.exports.controller = function(app){
     var limit = req.query.limit === undefined ? 10 : req.query.limit;
 
     var User = mongoose.model("User");
-    var query = User.find({}).skip(parseInt(offset)).limit(parseInt(limit));
-    query.exec(function(err, result){
+    var query = User.findEnabled({}, function(err, result){
       if (err) res.json(err);
       else res.json(result);
     });
