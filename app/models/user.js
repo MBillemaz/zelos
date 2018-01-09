@@ -21,11 +21,9 @@ const UserSchema = new Schema({
     groups: [{type: mongoose.Schema.ObjectId, ref: 'Group'}],
     addresses: [{type: mongoose.Schema.ObjectId, ref: 'Address'}],
     status: {
-        type: {
-            type: String,
-            enum: ['prospect', 'customer']
-        },
-        default: ['prospect']
+        type: String,
+        enum: ['prospect', 'customer'],
+        default: 'prospect'
     },
     createAt: {type: Date, default: Date.now}
 });
