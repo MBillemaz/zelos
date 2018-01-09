@@ -1,14 +1,5 @@
 const mongoose = require("mongoose");
 module.exports.controller = function(app){
-  app.get('/users', function(req,res,err){
-      var User = mongoose.model("User");
-      var users = User.find({}, function(err, resultat){
-          if (err) res.json(res);
-          else res.json(resultat)
-      });
-
-  })
-
   app.get('/user/:id', function(req,res,err){
       var User = mongoose.model("User");
       var users = User.find({_id: req.params.id}, function(err, resultat){
