@@ -10,7 +10,6 @@ class AddressType extends BaseModel {
     this.setFields({
       label: String
     });
-    this.exportModel();
   }
 }
 // export the class

@@ -11,7 +11,6 @@ class Group extends BaseModel {
         label: String,
         description: String
     });
-    this.exportModel();
   }
 }
 // export the class

@@ -24,7 +24,6 @@ class User extends BaseModel {
         },
         createAt: {type: Date, default: Date.now}
       });
-    this.exportModel();
   }
 }
 // export the class

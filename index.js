@@ -13,12 +13,13 @@ const dirModels = join(__dirname, 'app/models');
 var models = {}
 
 
-// Bootstrap models
+/* Dynamic export models */
 fs.readdirSync(dirModels)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
   .forEach(file => {
     let tmpModel = new require(join(dirModels, file))
     models[tmpModel.constructor.name] = new tmpModel()
+    models[tmpModel.constructor.name].exportModel()
   });
 
 // dynamically include routes (Controller)

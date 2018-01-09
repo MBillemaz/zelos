@@ -17,7 +17,6 @@ class Address extends BaseModel {
         phone: String,
         type: [{type: mongoose.Schema.ObjectId, ref: 'AddressType'}]
     });
-    this.exportModel();
   }
 }
 // export the class
