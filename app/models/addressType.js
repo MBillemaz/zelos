@@ -59,7 +59,7 @@ AddressTypeSchema.statics = {
    * @param {Function} callback
    * @api private
    */
-  findOneOrCreate : function findOneOrCreate(condition, callback = () => {}) {
+  findOneOrCreate : function findOneOrCreate(condition, callback = (err, result) => {return result}) {
       const self = this
       self.findOne(condition, (err, result) => {
           return result ? callback(err, result) : self.create(condition, (err, result) => { return callback(err, result) })
