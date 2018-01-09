@@ -1,84 +1,31 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
+const BaseModel = require(__dirname + '/baseModel.js');
 
-/**
- * Article Schema
- */
-
-const UserSchema = new Schema({
-    name: {type: String, required: true},
-    first_name: {type: String, required: true},
-    birth_date: {type: Date, required: true},
-    login: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    groups: [{type: mongoose.Schema.ObjectId, ref: 'Group'}],
-    addresses: [{type: mongoose.Schema.ObjectId, ref: 'Address'}],
-    status: {
-        type: {
-            type: String,
-            enum: ['prospect', 'customer']
+class User extends BaseModel {
+  constructor() {
+    super();
+    this.setFields({
+        name: {type: String, required: true},
+        first_name: {type: String, required: true},
+        birth_date: {type: Date, required: true},
+        login: {type: String, required: true, unique: true},
+        password: {type: String, required: true},
+        groups: [{type: mongoose.Schema.ObjectId, ref: 'Group'}],
+        addresses: [{type: mongoose.Schema.ObjectId, ref: 'Address'}],
+        status: {
+            type: {
+                type: String,
+                enum: ['prospect', 'customer']
+            },
+            default: ['prospect']
         },
-        default: ['prospect']
-    },
-    createAt: {type: Date, default: Date.now}
-});
-
-/**
- * Validations
- */
-
- // UserSchema.path('name').required(true, 'User name cannot be blank');
- // UserSchema.path('first_name').required(true, 'User first_name cannot be blank');
-
-
-/**
- * Pre-remove hook
- */
-
-UserSchema.pre('remove', function (next) {
-  // const imager = new Imager(imagerConfig, 'S3');
-  // const files = this.image.files;
-
-  // if there are files associated with the item, remove from the cloud too
-  // imager.remove(files, function (err) {
-  //   if (err) return next(err);
-  // }, 'article');
-
-  next();
-});
-
-/**
- * Methods
- */
-
-UserSchema.methods = {
-};
-
-/**
- * Statics
- */
-
-UserSchema.statics = {
-  /**
-   * findOneOrCreate
-   *
-   * @param {Object} condition
-   * @param {Function} callback
-   * @api private
-   */
-  findOneOrCreate : function findOneOrCreate(condition, callback = (err, result) => {return result}) {
-      const self = this
-      self.findOne(condition, (err, result) => {
-          return result ? callback(err, result) : self.create(condition, (err, result) => { return callback(err, result) })
-      })
+        createAt: {type: Date, default: Date.now}
+      });
+    this.exportModel();
   }
-};
-
-mongoose.model('User', UserSchema);
+}
+// export the class
+module.exports = User;

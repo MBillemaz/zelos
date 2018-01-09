@@ -5,12 +5,17 @@ const Schema = mongoose.Schema;
 
 mongoose.connect('mongodb://localhost/projet');
 
-const models = join(__dirname, 'app/models');
+const dirModels = join(__dirname, 'app/models');
+
+var models = {}
 
 // Bootstrap models
-fs.readdirSync(models)
+fs.readdirSync(dirModels)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
-  .forEach(file => require(join(models, file)));
+  .forEach(file => {
+    let tmpModel = new require(join(dirModels, file))
+    models[tmpModel.constructor.name] = new tmpModel()
+  });
 
 /* On charge les valeurs par défaults */
 require(join(__dirname, 'app/utils/defaultData.js'))
