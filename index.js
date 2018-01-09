@@ -13,26 +13,18 @@ fs.readdirSync(models)
   .forEach(file => require(join(models, file)));
 
 const Group = mongoose.model('Group');
-var newGroup = new Group({
+var newGroup = Group.findOneOrCreate({
     label: 'administrateur',
     description: 'Les administrateurs'
 });
 
-newGroup.save(function(err) {
-    if (err) throw err;
-})
-
 const AddressType = mongoose.model('AddressType');
-var newAddressType = new AddressType({
+var newAddressType = AddressType.findOneOrCreate({
     label: 'livraison'
 });
 
-newAddressType.save(function(err) {
-    if (err) throw err;
-})
-
 const Address = mongoose.model('Address');
-var newAddress = new Address({
+var newAddress = Address.findOneOrCreate({
     number: 3,
     street: "bobby",
     zip_code: "01700",
@@ -40,14 +32,10 @@ var newAddress = new Address({
     country: "Chine",
     email: "bob@mail.com",
     phone: "0649634976",
-})
-
-newAddress.save(function(err) {
-    if (err) throw err;
-})
+});
 
 const User = mongoose.model('User');
-var newUser = new User({
+var newUser = User.findOneOrCreate({
     name: 'tsointsoin',
     first_name: 'tagada',
     birth_date: new Date(1657, 01, 25),
@@ -55,8 +43,4 @@ var newUser = new User({
     password: 'pouetpouet',
     groups: newGroup,
     addresses: newAddress
-})
-
-newUser.save(function(err) {
-    if (err) throw err;
-})
+});
