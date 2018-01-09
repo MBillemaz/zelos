@@ -19,10 +19,48 @@ const baseStatics = {
    * @api private
    */
   findOneOrCreate : function findOneOrCreate(condition, callback = (err, result) => {return result}) {
-      const self = this
-      self.findOne(condition, (err, result) => {
+      this.findOne(condition, (err, result) => {
           return result ? callback(err, result) : self.create(condition, (err, result) => { return callback(err, result) })
       })
+  },
+  /**
+   * findEnabled
+   *
+   * @param {Object} condition
+   * @param {Function} callback
+   * @param {Number} limit
+   * @param {Number} offset
+   * @api private
+   */
+  findEnabled : function findEnabled(condition, callback, limit = 10, offset = 0) {
+    return this.findAll(Object.assign(condition, {disabled: false}), callback, limit, offset);
+  },
+  /**
+   * findDisabled
+   *
+   * @param {Object} condition
+   * @param {Function} callback
+   * @param {Number} limit
+   * @param {Number} offset
+   * @api private
+   */
+  findDisabled : function findDisabled(condition, callback, limit = 10, offset = 0) {
+    return this.findAll(Object.assign(condition, {disabled: true}), callback, limit, offset);
+  },
+  /**
+   * findEnabled
+   *
+   * @param {Object} condition
+   * @param {Function} callback
+   * @param {Number} limit
+   * @param {Number} offset
+   * @api private
+   */
+  findAll : function findAll(condition, callback, limit = 10, offset = 0) {
+    return this.find(condition)
+      .skip(offset)
+      .limit(limit)
+      .exec(callback);
   }
 }
 
