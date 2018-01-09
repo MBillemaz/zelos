@@ -10,13 +10,19 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/projet', {useMongoClient: true});
 
-const models = join(__dirname, 'app/models');
+const dirModels = join(__dirname, 'app/models');
+
+var models = {}
 
 
-// Bootstrap models
-fs.readdirSync(models)
+/* Dynamic export models */
+fs.readdirSync(dirModels)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
-  .forEach(file => require(join(models, file)));
+  .forEach(file => {
+    let tmpModel = new require(join(dirModels, file))
+    models[tmpModel.constructor.name] = new tmpModel()
+    models[tmpModel.constructor.name].exportModel()
+  });
 
 // dynamically include routes (Controller)
 fs.readdirSync('./app/controllers').forEach(function (file) {
