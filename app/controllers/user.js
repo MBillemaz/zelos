@@ -9,13 +9,13 @@ module.exports.controller = function(app){
       });
   });
 
-  app.post('/newUser', function(req,res,err){
+  app.post('/user', function(req,res,err){
       var User = mongoose.model("User");
       User.create(req.body, (err, result) => {
           if (err) {
               res.statusCode = 400;
               res.send(err);
-          } 
+          }
           else {
               res.statusCode = 201;
               res.send(result);
@@ -24,8 +24,8 @@ module.exports.controller = function(app){
       })
   });
 
-  app.post('/user/delete', function(req,res,err){
-    var id = req.body.id;
+  app.delete('/user/:id', function(req,res,err){
+    var id = req.params.id;
     if (!id){
         res.statusCode = 400;
         res.send("Need user id to delete");
@@ -43,7 +43,6 @@ module.exports.controller = function(app){
             }
         })
     }
-    
+
   });
 }
-
