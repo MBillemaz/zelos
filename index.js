@@ -5,6 +5,8 @@ const Schema = mongoose.Schema;
 var express = require('express')
 var app = express();
 var bodyParser = require('body-parser');
+// parse application/json
+app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/projet', {useMongoClient: true});
 
@@ -27,8 +29,8 @@ fs.readdirSync('./app/controllers').forEach(function (file) {
 /* On charge les valeurs par défaults */
 require(join(__dirname, 'app/utils/defaultData.js'))
 
-// parse application/json
-app.use(bodyParser.json())
+
+
 
 
 app.listen(3000);
