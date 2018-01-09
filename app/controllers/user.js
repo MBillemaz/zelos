@@ -15,7 +15,7 @@ module.exports.controller = function(app){
           if (err) {
               res.statusCode = 400;
               res.send(err);
-          } 
+          }
           else {
               res.statusCode = 201;
               res.send(result);
@@ -24,7 +24,7 @@ module.exports.controller = function(app){
       })
   });
 
-  app.post('/user/delete', function(req,res,err){
+  app.delete('/user/delete', function(req,res,err){
     var id = req.body.id;
     if (!id){
         res.statusCode = 400;
@@ -43,7 +43,6 @@ module.exports.controller = function(app){
             }
         })
     }
-    
+
   });
 }
-
