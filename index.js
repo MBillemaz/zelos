@@ -1,53 +1,28 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const fs = require('fs');
+const join = require('path').join;
+const Schema = mongoose.Schema;
+
 mongoose.connect('mongodb://localhost/projet');
 
-var GroupSchema = new Schema({
-    label: String,
-    description: String
-})
+const models = join(__dirname, 'app/models');
 
-var Group = mongoose.model('Group', GroupSchema);
+// Bootstrap models
+fs.readdirSync(models)
+  .filter(file => ~file.search(/^[^\.].*\.js$/))
+  .forEach(file => require(join(models, file)));
 
-var UserSchema = new Schema({
-    name: {type: String, required: true},
-    first_name: {type: String, required: true},
-    birth_date: {type: Date, required: true},
-    login: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    groups: [{type: mongoose.Schema.ObjectId, ref: 'Group'}],
-    addresses: [{type: mongoose.Schema.ObjectId, ref: 'Address'}],
-    status: {
-        type: {
-            type: String,
-            enum: ['prospect', 'customer']
-        },
-        default: ['prospect']
-    },
-    createAt: {type: Date, default: Date.now}
+const Group = mongoose.model('Group');
+var newGroup = new Group({
+    label: 'administrateur',
+    description: 'Les administrateurs'
 });
 
-var User = mongoose.model('User', UserSchema);
-
-var AddressTypeSchema = new Schema({
-    label: String
-});
-
-var AddressType = mongoose.model('AddressType', AddressTypeSchema);
-
-var AddressSchema = new Schema({
-    number: Number,
-    street: String,
-    zip_code: String,
-    city: String,
-    country: String,
-    email: String,
-    phone: String,
-    type: [{type: mongoose.Schema.ObjectId, ref: 'AddressType'}]
+newGroup.save(function(err) {
+    if (err) throw err;
 })
 
-var Address = mongoose.model('Address', AddressSchema);
-
+const AddressType = mongoose.model('AddressType');
 var newAddressType = new AddressType({
     label: 'livraison'
 });
@@ -56,6 +31,7 @@ newAddressType.save(function(err) {
     if (err) throw err;
 })
 
+const Address = mongoose.model('Address');
 var newAddress = new Address({
     number: 3,
     street: "bobby",
@@ -70,12 +46,14 @@ newAddress.save(function(err) {
     if (err) throw err;
 })
 
+const User = mongoose.model('User');
 var newUser = new User({
     name: 'tsointsoin',
     first_name: 'tagada',
     birth_date: new Date(1657, 01, 25),
     login: 'a',
     password: 'pouetpouet',
+    groups: newGroup,
     addresses: newAddress
 })
 
