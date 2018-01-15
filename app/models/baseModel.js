@@ -20,7 +20,7 @@ const baseStatics = {
    */
   findOneOrCreate : function findOneOrCreate(condition, callback = (err, result) => {return result}) {
       this.findOne(condition, (err, result) => {
-          return result ? callback(err, result) : self.create(condition, (err, result) => { return callback(err, result) })
+          return result ? callback(err, result) : this.create(condition, (err, result) => { return callback(err, result) })
       })
   },
   /**
