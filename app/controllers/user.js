@@ -33,7 +33,6 @@ module.exports.controller = function(app){
       var User = mongoose.model("User");
       
       Group.findEnabled({_id: idGroup}, function(err, group){
-        console.log(group);
         if (err) res.status(400).json(err);
         else{
             if(group.length == 0) res.status(400).send("Group doesn't exist");
