@@ -42,5 +42,7 @@ fs.readdirSync('./app/controllers').forEach(function (file) {
 /* On charge les valeurs par défaults */
 require(join(__dirname, 'app/utils/defaultData.js'))
 
-let server = app.listen(3000);
+let server = app.listen(3000, () => {
+    console.log("[INFO] Server started on http://localhost:3000/")
+});
 module.exports = server;
