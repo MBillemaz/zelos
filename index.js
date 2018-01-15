@@ -10,6 +10,9 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/projet', {useMongoClient: true});
 
+/* Use good Promise */
+mongoose.Promise = Promise
+
 const dirModels = join(__dirname, 'app/models');
 
 var models = {}
