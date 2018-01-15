@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/projet', {useMongoClient: true});
-
+mongoose.plugin(schema => { schema.options.usePushEach = true });
 /* Use good Promise */
 mongoose.Promise = Promise
 

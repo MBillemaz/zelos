@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+var hash = require('../helpers/hash.js');
 module.exports.controller = function(app){
 
   app.get('/user/:id', function(req,res,err){
@@ -11,6 +12,7 @@ module.exports.controller = function(app){
 
   app.post('/user', function(req,res,err){
       var User = mongoose.model("User");
+      req.body.password = hash.hashPassword(req.body.password);
       User.create(req.body, (err, result) => {
           if (err) {
               res.statusCode = 400;
@@ -29,17 +31,32 @@ module.exports.controller = function(app){
       var idGroup = req.body.group;
       var Group = mongoose.model("Group");
       var User = mongoose.model("User");
-
-      Group.findOne({_id: idGroup}, function(err, group){
+      
+      Group.findEnabled({_id: idGroup}, function(err, group){
         if (err) res.status(400).json(err);
         else{
-            if(group.disabled) res.status(400).send("Ce groupe est désactivé");
+            if(group.length == 0) res.status(400).send("Group doesn't exist");
             else{
-                User.findByIdAndUpdate({_id: id}, {$push: {groups: group}}, function(error, resu){
+                User.findEnabled({_id: id}, function(error, user){
                     if (error) res.status(400).send(err);
                     else {
-                        console.log(resu);
-                        res.status(201).send("Group added to user");
+                        var inGroup = false;
+                        user[0].groups.forEach((testGroup) => {
+                            if(testGroup == idGroup){
+                                inGroup = true;
+                            } 
+                        });
+                        if(inGroup == false){
+                            user[0].groups.push(group[0]);
+                            user[0].save(function (err, updated){
+                                if (err) res.status(400).send(err);
+                                else res.status(201).send("Group added to user");
+                            })
+                        }
+                        else {
+                            res.status(400).send("User already in this gorup");
+                        }
+                        
                     }
                 });
             }
