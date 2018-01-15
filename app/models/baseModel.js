@@ -11,6 +11,39 @@ const baseStructure = {
 const baseMethods = {
 }
 
+const removeDeletedElement = (result) => {
+    if (result) {
+        if (result.disabled) {
+            result = undefined
+        } else {
+            Object.keys(result).map((key, index) => {
+              if (result[key].disabled) {
+                result[key] = undefined
+              }
+              if(Array.isArray(result[key])) {
+                  removeDeletedElement(result[key])
+              }
+            });
+        }
+    }
+}
+
+const autoPopulateAllFields = function (schema) {
+    var paths = '';
+    schema.eachPath(function process(pathname, schemaType) {
+        if (pathname=='_id') return;
+        if (schemaType.options.ref || (schemaType.options.type[0] && schemaType.options.type[0].ref))
+            paths += ' ' + pathname;
+    });
+    schema.pre('find', handler);
+    schema.pre('findOne', handler);
+
+    function handler(next) {
+        this.populate(paths);
+        next();
+    }
+};
+
 const baseStatics = {
   /**
    * findOneOrCreate
@@ -90,7 +123,7 @@ class BaseModel {
     this.structure[key] = undefined;
   }
   setFields(structure) {
-    this.structure = Object.assign(baseStructure, structure);
+    this.structure = Object.assign({}, baseStructure, structure);
   }
 
   addMethod(name, _function) {
@@ -103,7 +136,7 @@ class BaseModel {
     this.methods[key] = undefined;
   }
   setMethods(methods) {
-    this.methods = Object.assign(baseMethods, methods);
+    this.methods = Object.assign({}, baseMethods, methods);
   }
 
   addStatic(name, _function) {
@@ -116,13 +149,16 @@ class BaseModel {
     this.statics[key] = undefined;
   }
   setStatics(statics) {
-          this.statics = Object.assign(baseStatics, statics);
+          this.statics = Object.assign({}, baseStatics, statics);
       }
 
   exportModel() {
       let schemaExport = new Schema(this.structure);
       schemaExport.methods = this.methods;
       schemaExport.statics = this.statics;
+      //Suppression des élements deleted
+      schemaExport.post('find', removeDeletedElement);
+      schemaExport.plugin(autoPopulateAllFields);
       console.log("[INFO] Export model : " + this.name);
       mongoose.model(this.name, schemaExport);
   }
