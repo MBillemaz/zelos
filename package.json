@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "express": "^4.16.2",
     "mongoose": "^4.13.9",
     "nodemon": "^1.14.8",

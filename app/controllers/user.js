@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+var hash = require('../helpers/hash.js');
 module.exports.controller = function(app){
 
   app.get('/user/:id', function(req,res,err){
@@ -11,6 +12,7 @@ module.exports.controller = function(app){
 
   app.post('/user', function(req,res,err){
       var User = mongoose.model("User");
+      req.body.password = hash.hashPassword(req.body.password);
       User.create(req.body, (err, result) => {
           if (err) {
               res.statusCode = 400;
