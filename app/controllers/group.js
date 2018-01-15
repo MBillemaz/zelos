@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 module.exports.controller = function(app){
 
-    app.delete('/group/delete/:id', function(req,res,err){
+    app.delete('/group/:id', function(req,res,err){
         var id = req.params.id;
         if (!id){
             res.statusCode = 400;
