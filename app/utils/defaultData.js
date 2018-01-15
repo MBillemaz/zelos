@@ -49,11 +49,11 @@ const loadAdressType = () => {
 
 const loadUser = () => {
   UserModel.findOneOrCreate({
-      name: 'tsointsoin',
-      first_name: 'tagada',
+      name: 'user1',
+      first_name: 'user1name',
       birth_date: new Date(1657, 01, 25),
-      login: 'a',
-      password: 'pouetpouet',
+      login: 'user1',
+      password: '$2y$10$xJopALJrQVmSgF7PjPocvOWqNdPNTnp3/Knh8ELswEYDNxCet5QlC',
       groups: myGroup,
       addresses: myAddress
     }, (err, result) => {
