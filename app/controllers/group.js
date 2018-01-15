@@ -2,8 +2,8 @@
 const mongoose = require("mongoose");
 module.exports.controller = function(app){
 
-    app.post('/group/delete', function(req,res,err){
-        var id = req.body.id;
+    app.delete('/group/delete/:id', function(req,res,err){
+        var id = req.params.id;
         if (!id){
             res.statusCode = 400;
             res.send("Need group to delete");
