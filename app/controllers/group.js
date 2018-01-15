@@ -37,7 +37,6 @@ module.exports.controller = function (app) {
                 else {
                     if (label) group.label = label;
                     if (desc) group.description = desc;
-                    console.log(group);
                     group.save(function (error, updated) {
                         if (error) res.status(400).send("Can't modify group");
                         else res.status(201).send("Group modified");

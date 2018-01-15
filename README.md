@@ -65,4 +65,4 @@ body:
 
 ## Jouer les tests unitaires
 
-Lancez 'mocha test.js'
+Lancez 'mocha test.js' (**Le serveur doit être préalablement arrêté !**)
