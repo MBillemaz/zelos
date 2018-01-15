@@ -62,3 +62,7 @@ body:
   "password": "userpassword"
 }
 '''
+
+## Jouer les tests unitaires
+
+Lancez 'mocha test.js'
