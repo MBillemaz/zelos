@@ -1,6 +1,27 @@
-
 const mongoose = require("mongoose");
 module.exports.controller = function(app){
+
+  app.get('/group/:id', function(req,res,err){
+      var User = mongoose.model("Group");
+      var users = Group.find({_id: req.params.id}, function(err, resultat){
+          if (err) res.json(res);
+          else res.json(resultat)
+      });
+  });
+
+  app.post('/group', function(req,res,err){
+      var User = mongoose.model("Group");
+      Group.create(req.body, (err, result) => {
+          if (err) {
+              res.statusCode = 400;
+              res.send(err);
+          }
+          else {
+              res.statusCode = 201;
+              res.send(result);
+          }
+      })
+  });
 
     app.delete('/group/:id', function(req,res,err){
         var id = req.params.id;

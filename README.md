@@ -27,7 +27,7 @@ Vous pouvez rajouter un offset et un limit. Par exemple :
 ### User
 
 * localhost:3000/user/:id -> (GET) permet de récupérer l'utilisateur via son id.
-* localhost:3000/user/:id -> (PATCH) permet de modifier un ou des attributs d'un utilisateur via son id.
+* localhost:3000/user/:id -> (PATCH) permet de modifier un ou des attributs d'un utilisateur via son id. On peut lui associer un groupe en lui passant l'id d'un groupe 'group'.
 * localhost:3000/user/:id -> (DELETE) permet de supprimer (désactiver) un utilisateur de la base de donnée, via son id.
 * localhost:3000/user -> (POST) permet de créer un utilisateur. Exemple de requête à envoyer pour la création d'un utilisateur :
 
