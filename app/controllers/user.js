@@ -24,6 +24,29 @@ module.exports.controller = function(app){
       })
   });
 
+  app.patch('/user/:id', function(req,res,err){
+      var id = req.params.id;
+      var idGroup = req.body.group;
+      var Group = mongoose.model("Group");
+      var User = mongoose.model("User");
+
+      Group.findOne({_id: idGroup}, function(err, group){
+        if (err) res.status(400).json(err);
+        else{
+            if(group.disabled) res.status(400).send("Ce groupe est désactivé");
+            else{
+                User.findByIdAndUpdate({_id: id}, {$push: {groups: group}}, function(error, resu){
+                    if (error) res.status(400).send(err);
+                    else {
+                        console.log(resu);
+                        res.status(201).send("Group added to user");
+                    }
+                });
+            }
+        }
+      })
+  })
+
   app.delete('/user/:id', function(req,res,err){
     var id = req.params.id;
     if (!id){
