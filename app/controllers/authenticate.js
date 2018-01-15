@@ -8,11 +8,8 @@ module.exports.controller = function(app){
       var password = req.body.password;
     }
 
-    console.log("login= " + login);
-
     var User = mongoose.model("User");
     var user = User.findEnabled({login: login}, function(err, user){
-      console.log("hello! user=" + user);
       if (!user || !hash.comparePassword(password, user[0].password)){
         res.status(401).json({message: "Bad login or password."});
       }
