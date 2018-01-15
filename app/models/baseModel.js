@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pluralize = require('pluralize');
 
 const baseStructure = {
   disabled: {type: Boolean, default: false}
@@ -56,7 +57,13 @@ const baseStatics = {
    * @param {Number} offset
    * @api private
    */
-  findAll : function findAll(condition, callback, limit = 10, offset = 0) {
+  findAll : function findAll(condition, callback, _limit = 10, _offset = 0) {
+    let limit = parseInt(_limit);
+    let offset = parseInt(_offset);
+
+    if (isNaN(limit)) { limit = 10 }
+    if (isNaN(offset)) { offset = 0 }
+
     return this.find(condition)
       .skip(offset)
       .limit(limit)
@@ -66,6 +73,8 @@ const baseStatics = {
 
 class BaseModel {
   constructor() {
+    this.route = '/' + pluralize(this.constructor.name).toLowerCase();
+    this.name = this.constructor.name;
     this.structure = Object.assign({}, baseStructure);
     this.methods = Object.assign({}, baseMethods);
     this.statics = Object.assign({}, baseStatics);
@@ -107,16 +116,30 @@ class BaseModel {
     this.statics[key] = undefined;
   }
   setStatics(statics) {
-    this.statics = Object.assign(baseStatics, statics);
+          this.statics = Object.assign(baseStatics, statics);
+      }
+
+      exportModel() {
+          let schemaExport = new Schema(this.structure);
+          schemaExport.methods = this.methods;
+          schemaExport.statics = this.statics;
+          console.log("[INFO] Export model : " + this.name);
+          mongoose.model(this.name, schemaExport);
+      }
+
+      exportControllerSearch(app) {
+          let route = '/search' + this.route;
+          console.log('[INFO] Export route search : GET ' + route)
+          const self = this;
+          app.get(route, function(req, res, err) {
+          var tmpModel = mongoose.model(self.name);
+          var query = tmpModel.findEnabled({}, function(err, result){
+              if (err) res.json(err);
+              else res.json(result);
+          }, req.query.limit, req.query.offset);
+      });
   }
 
-  exportModel() {
-    let schemaExport = new Schema(this.structure);
-    schemaExport.methods = this.methods;
-    schemaExport.statics = this.statics;
-    console.log("Declare model name : " + this.constructor.name);
-    mongoose.model(this.constructor.name, schemaExport);
-  }
 
 }
 // export the class

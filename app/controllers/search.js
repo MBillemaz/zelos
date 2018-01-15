@@ -1,16 +1,6 @@
 const mongoose = require("mongoose");
-module.exports.controller = function(app){
-
-  app.get('/users', function(req, res, err) {
-
-    var offset = req.query.offset === undefined ? 0 : req.query.offset;
-    var limit = req.query.limit === undefined ? 10 : req.query.limit;
-
-    var User = mongoose.model("User");
-    var query = User.findEnabled({}, function(err, result){
-      if (err) res.json(err);
-      else res.json(result);
-    });
-  });
-
+module.exports.controller = function(app, models){
+    for (var model in models) {
+        models[model].exportControllerSearch(app);
+    }
 }
