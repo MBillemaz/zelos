@@ -119,28 +119,13 @@ class BaseModel {
           this.statics = Object.assign(baseStatics, statics);
       }
 
-      exportModel() {
-          let schemaExport = new Schema(this.structure);
-          schemaExport.methods = this.methods;
-          schemaExport.statics = this.statics;
-          console.log("[INFO] Export model : " + this.name);
-          mongoose.model(this.name, schemaExport);
-      }
-
-      exportControllerSearch(app) {
-          let route = '/search' + this.route;
-          console.log('[INFO] Export route search : GET ' + route)
-          const self = this;
-          app.get(route, function(req, res, err) {
-          var tmpModel = mongoose.model(self.name);
-          var query = tmpModel.findEnabled({}, function(err, result){
-              if (err) res.json(err);
-              else res.json(result);
-          }, req.query.limit, req.query.offset);
-      });
+  exportModel() {
+      let schemaExport = new Schema(this.structure);
+      schemaExport.methods = this.methods;
+      schemaExport.statics = this.statics;
+      console.log("[INFO] Export model : " + this.name);
+      mongoose.model(this.name, schemaExport);
   }
-
-
 }
 // export the class
 module.exports = BaseModel;
