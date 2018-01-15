@@ -1,84 +1,46 @@
-import { Schema } from 'mongoose';
-var mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost/projet');
+const mongoose = require("mongoose");
+const fs = require('fs');
+const join = require('path').join;
+const Schema = mongoose.Schema;
+var express = require('express')
+var app = express();
+var bodyParser = require('body-parser');
+// parse application/json
+app.use(bodyParser.json());
 
-var GroupSchema = new Schema({
-    label: String,
-    description: String
-})
+mongoose.connect('mongodb://localhost/projet', {useMongoClient: true});
+mongoose.plugin(schema => { schema.options.usePushEach = true });
+/* Use good Promise */
+mongoose.Promise = Promise
 
-var Group = mongoose.Model('Group', GroupSchema);
+const dirModels = join(__dirname, 'app/models');
+const excludeModels = [
+    'baseModel.js'
+]
 
-var UserSchema = new Schema({
-    name: {type: String, required: true},
-    first_name: {type: String, required: true},
-    birth_date: {type: Date, required: true},
-    login: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    groups: [{type: mongoose.Schema.ObjectID, ref: 'Group'}],
-    addresses: [{type: mongoose.Schema.ObjectID, ref: 'Address'}],
-    status: {
-        type: [{
-            type: String,
-            enum: ['prospect', 'customer']
-        }],
-        default: ['prospect']
-    },
-    createAt: {type: Date, default: Date.now()}
+var models = {}
+
+
+/* Dynamic export models */
+fs.readdirSync(dirModels)
+  .filter(file => (~file.search(/^[^\.].*\.js$/) && excludeModels.indexOf(file) === -1))
+  .forEach(file => {
+    let classModel = require(join(dirModels, file));
+    let tmpModel = new classModel()
+    models[tmpModel.constructor.name] = tmpModel;
+    models[tmpModel.constructor.name].exportModel();
+  });
+
+// dynamically include routes (Controller)
+fs.readdirSync('./app/controllers').forEach(function (file) {
+  if(file.substr(-3) == '.js') {
+      route = require('./app/controllers/' + file);
+      route.controller(app, models);
+  }
 });
 
-var User = mongoose.Model('User', UserSchema);
+/* On charge les valeurs par défaults */
+require(join(__dirname, 'app/utils/defaultData.js'))
 
-var AddressTypeSchema = new Schema({
-    label: String
-});
-
-var AddressType = mongoose.Model('AddressType', AddressTypeSchema);
-
-var AddressSchema = new Schema({
-    number: Number,
-    street: String,
-    zip_code: String,
-    city: String,
-    country: String,
-    email: String,
-    phone: String,
-    type: [{type: mongoose.SchemaType.ObjectID, ref: 'AddressType'}]
-})
-
-var Address = mongoose.Model('Address', AddressSchema);
-
-var newAddressType = new AddressType({
-    label: 'livraison'
-});
-
-newAddressType.save(function(err) {
-    if (err) throw err;
-})
-
-var newAddress = new Address({
-    number: 3,
-    street: "bobby",
-    zip_code: "01700",
-    city: "Lyon",
-    country: "Chine",
-    email: "bob@mail.com",
-    phone: "0649634976",
-})
-
-newAddress.save(function(err) {
-    if (err) throw err;
-})
-
-var newUser = new User({
-    name: 'tsointsoin',
-    first_name: 'tagada',
-    birth_date: new Date(1657, 01, 25),
-    login: 'a',
-    password: 'pouetpouet',
-    addresses: newAddress
-})
-
-newUser.save(function(err) {
-    if (err) throw err;
-})
+let server = app.listen(3000);
+module.exports = server;
